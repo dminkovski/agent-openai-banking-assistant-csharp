@@ -1,0 +1,6 @@
+@agent_openai_banking_assistant_csharp_HostAddress = http://localhost:5079
+
+GET {{agent_openai_banking_assistant_csharp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
