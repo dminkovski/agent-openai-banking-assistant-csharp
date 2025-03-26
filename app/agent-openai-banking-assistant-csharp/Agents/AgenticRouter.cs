@@ -8,12 +8,12 @@ public class AgenticRouter
     private PaymentAgent _paymentAgent;
     private TransactionsReportingAgent _transactionsReportingAgent;
     private Kernel _kernel;
-    public AgenticRouter(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, ILoggerFactory loggerFactory)
+    public AgenticRouter(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, ILoggerFactory loggerFactory, IUserService userService)
     {
         _kernel = kernel;
         _intentExtractorAgent = new IntentExtractorAgent(kernel, configuration, loggerFactory.CreateLogger<IntentExtractorAgent>());
-        _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, loggerFactory);
-        _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration);
+        _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, loggerFactory, userService);
+        _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration, userService);
         _logger = loggerFactory.CreateLogger<AgenticRouter>();
     }
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.

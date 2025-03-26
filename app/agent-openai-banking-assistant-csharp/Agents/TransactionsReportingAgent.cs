@@ -2,7 +2,7 @@
 public class TransactionsReportingAgent
 {
     public ChatCompletionAgent agent;
-    public TransactionsReportingAgent(Kernel kernel, IConfiguration configuration)
+    public TransactionsReportingAgent(Kernel kernel, IConfiguration configuration, IUserService userService)
     {
         Kernel toolKernel = kernel.Clone();
 
@@ -28,7 +28,7 @@ public class TransactionsReportingAgent
         new()
         {
             Name = "TransactionsReportingAgent",
-            Instructions = AgentInstructions.TransactionsReportingAgentInstructions,
+            Instructions = String.Format(AgentInstructions.TransactionsReportingAgentInstructions, userService.GetLoggedUser()),
             Kernel = toolKernel,
             Arguments =
             new KernelArguments(

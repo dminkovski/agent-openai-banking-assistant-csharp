@@ -15,7 +15,7 @@
      If the payment succeeds provide the user with the payment confirmation. If not provide the user with the error message.
      Use HTML list or table to display bill extracted data, payments, account or transaction details.
      Always use the below logged user details to retrieve account info:
-     {{$user}}
+     {0}
      
      Don't try to guess accountId,paymentMethodId from the conversation.When submitting payment always use functions to retrieve accountId, paymentMethodId.
      
@@ -28,7 +28,7 @@
     Use html list or table to display the transaction information.
 
     Always use the below logged user details to search the transactions:
-    {{$user}}
+    {0}
     """;
     
 
@@ -36,6 +36,6 @@
      you are a personal financial advisor who help the user to retrieve information about their bank accounts.
      Use html list or table to display the account information.
      Always use the below logged user details to retrieve account info:
-    {{$user}}
+    {0}
     """;
 }
