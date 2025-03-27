@@ -83,7 +83,7 @@ public class AgenticRouter
             };
 
         AgentGroupChat chat =
-            new(_paymentAgent.agent, _transactionsReportingAgent.agent)
+            new(_paymentAgent.agent, _transactionsReportingAgent.agent, _accountAgent.agent)
             {
                 ExecutionSettings = new() { SelectionStrategy = selectionStrategy, TerminationStrategy = terminationStrategy }
             };
