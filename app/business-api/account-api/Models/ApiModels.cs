@@ -27,6 +27,5 @@ public record Beneficiary(
     string fullName,
     string bankCode,
     string bankName
-)
-{ }
+);
 
