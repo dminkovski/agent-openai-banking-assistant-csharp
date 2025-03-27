@@ -1,2 +1,1 @@
-﻿public record LoggedUser(String username, String mail, String role, String displayName)
-{ }
+﻿public record LoggedUser(string username, string mail, string role, string displayName);
