@@ -12,8 +12,7 @@ public record PaymentMethodSummary(
     string type,
     string activationDate,
     string expirationDate
-)
-{ }
+);
 public record PaymentMethod(
     string id,
     string type,
