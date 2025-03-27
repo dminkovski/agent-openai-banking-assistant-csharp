@@ -157,38 +157,49 @@ module copilot 'app/copilot.bicep' = {
     exists: copilotAppExists
     env: [
       {
-        name: 'AZURE_STORAGE_ACCOUNT'
+        name: 'DOTNET_Storage__AccountName'
         value: storage.outputs.name
       }
       {
-        name: 'AZURE_STORAGE_CONTAINER'
+        name: 'DOTNET_Storage__ContainerName'
         value: storageContainerName
       }
-     
       {
-        name: 'AZURE_OPENAI_SERVICE'
-        value:  openAi.outputs.name
+        name: 'DOTNET_AzureOpenAI__Endpoint'
+        value: openAi.outputs.endpoint
       }
       {
-        name: 'AZURE_OPENAI_CHATGPT_DEPLOYMENT'
+        name: 'DOTNET_AzureOpenAI__ApiKey'
+        value: openAi.outputs.key
+      }
+      {
+        name: 'DOTNET_AzureOpenAI__Deployment'
         value: chatGptDeploymentName
       }
       {
-        name: 'AZURE_DOCUMENT_INTELLIGENCE_SERVICE'
-        value: documentIntelligence.outputs.name
+        name: 'DOTNET_DocumentIntelligence__Endpoint'
+        value: documentIntelligence.outputs.endpoint
       }
       {
-        name: 'TRANSACTIONS_API_SERVER_URL'
+        name: 'DOTNET_DocumentIntelligence__ApiKey'
+        value: documentIntelligence.outputs.key
+      }
+      {
+        name: 'DOTNET_BackendAPIs__TransactionsApiUrl'
         value: transaction.outputs.SERVICE_API_URI
       }
       {
-        name: 'PAYMENTS_API_SERVER_URL'
+        name: 'DOTNET_BackendAPIs__PaymentsApiUrl'
         value: payment.outputs.SERVICE_API_URI
       }
       {
-        name: 'ACCOUNTS_API_SERVER_URL'
-        value: account.outputs.SERVICE_API_URI}
-     
+        name: 'DOTNET_BackendAPIs__AccountsApiUrl'
+        value: account.outputs.SERVICE_API_URI
+      }
+      {
+        name: 'DOTNET_AzureAd__TenantId'
+        value: tenant().tenantId
+      }
     ]
   }
 }
@@ -245,7 +256,7 @@ module payment 'app/payment.bicep' = {
     exists: paymentAppExists
     env: [
       {
-        name: 'TRANSACTIONS_API_SERVER_URL'
+        name: 'DOTNET_BackendAPIs__TransactionsApiUrl'
         value: transaction.outputs.SERVICE_API_URI
       }
      
@@ -391,9 +402,13 @@ output AZURE_OPENAI_CHATGPT_MODEL string = chatGptModelName
 output AZURE_OPENAI_SERVICE string =  openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name 
 output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = chatGptDeploymentName
+output AZURE_OPENAI_APIKEY string = openAi.outputs.key
+output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 
 
 output AZURE_DOCUMENT_INTELLIGENCE_SERVICE string = documentIntelligence.outputs.name
+output AZURE_DOCUMENT_INTELLIGENCE_SERVICE_ENDPOINT string = documentIntelligence.outputs.endpoint
+output AZURE_DOCUMENT_INTELLIGENCE_SERVICE_APIKEY string = documentIntelligence.outputs.key
 output AZURE_DOCUMENT_INTELLIGENCE_RESOURCE_GROUP string = documentIntelligenceResourceGroup.name
 
 

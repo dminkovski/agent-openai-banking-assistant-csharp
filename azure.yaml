@@ -1,30 +1,30 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: personal-finance-assistance-java
+name: personal-finance-assistance-dotnet
 metadata:
-  template: agent-openai-java-banking-assistant@1.0.0-alpha
+  template: agent-openai-dotnet-banking-assistant@1.0.0-alpha
 services:
   copilot:
-    project: app/copilot
-    language: java
+    project: app/agent-openai-banking-assistant-csharp
+    language: dotnet
     host: containerapp
     docker:
       remoteBuild: true
   account:
-    project: app/business-api/account
-    language: java
+    project: app/business-api/account-api
+    language: dotnet
     host: containerapp
     docker:
       remoteBuild: true
   payment:
-    project: app/business-api/payment
-    language: java
+    project: app/business-api/payment-api
+    language: dotnet
     host: containerapp
     docker:
       remoteBuild: true
   transaction:
-    project: app/business-api/transactions-history
-    language: java
+    project: app/business-api/transactions-api
+    language: dotnet
     host: containerapp
     docker:
       remoteBuild: true

@@ -1,4 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true)
+    .AddEnvironmentVariables("DOTNET_");
 
 // Add services to the container.
 // @TODO: Temporary. Fix later.
@@ -7,7 +10,7 @@ builder.Services.AddCors(options => options.AddPolicy("allowSpecificOrigins", po
 // Add services to the container.
 builder.Services.AddSingleton<ILoggerFactory>(LoggerFactory.Create(builder => builder.AddConsole()));
 
-builder.Services.AddServices(builder.Configuration);
+builder.Services.AddServices();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

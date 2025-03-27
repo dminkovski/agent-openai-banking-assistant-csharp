@@ -67,9 +67,14 @@ public class ChatController : ControllerBase
             if ("user".Equals(historyChat.Role))
             {
                 if (historyChat.Attachments == null || !historyChat.Attachments.Any())
+                {
                     chatHistory.AddUserMessage(historyChat.Content);
+                }   
                 else
-                    chatHistory.AddUserMessage(historyChat.Content + " " + historyChat.Attachments.ToString());
+                {
+                    string attachmentsString = string.Join(", ", historyChat.Attachments);
+                    chatHistory.AddUserMessage($"{historyChat.Content} {attachmentsString}");
+                }
             }
             if ("assistant".Equals(historyChat.Role))
                 chatHistory.AddAssistantMessage(historyChat.Content);

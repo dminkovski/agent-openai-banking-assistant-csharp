@@ -1,16 +1,17 @@
 ﻿public static class ServicesExtensions
 {
-    public static IServiceCollection AddAzureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAzureServices(this IServiceCollection services)
     {
-        
         // Register Azure Blob Service Client via the Azure Clients builder.
         services.AddSingleton<BlobServiceClient>(provider =>
         {
+            var configuration = provider.GetRequiredService<IConfiguration>();
             var credential = new DefaultAzureCredential();
             var accountName = configuration["Storage:AccountName"];
-            ArgumentNullException.ThrowIfNullOrEmpty(accountName);
+            var storageEndpoint = $"https://{accountName}.blob.core.windows.net";
+            Console.WriteLine($"BlobServiceClient: {storageEndpoint}");
             var blobServiceClient = new BlobServiceClient(
-                new Uri($"https://{accountName}.blob.core.windows.net"),
+                new Uri(storageEndpoint),
                 credential);
             return blobServiceClient;
         });
@@ -18,16 +19,20 @@
         // Register BlobStorageProxy as IBlobStorage.
         services.AddSingleton<IBlobStorage>(provider =>
         {
+            var configuration = provider.GetRequiredService<IConfiguration>();
             var blobServiceClient = provider.GetRequiredService<BlobServiceClient>();
-            return new BlobStorageProxy(blobServiceClient, configuration);
+            var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger<BlobStorageProxy>();
+            return new BlobStorageProxy(blobServiceClient, logger, configuration);
         });
 
         // Register DocumentIntelligenceClient.
         services.AddSingleton<DocumentIntelligenceClient>(provider =>
         {
+            var configuration = provider.GetRequiredService<IConfiguration>();
             var endpoint = configuration["DocumentIntelligence:Endpoint"];
             var apiKey = configuration["DocumentIntelligence:ApiKey"];
-            return new DocumentIntelligenceClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
+            var credential = new DefaultAzureCredential();
+            return new DocumentIntelligenceClient(new Uri(endpoint), credential);
         });
 
         // Register DocumentIntelligenceProxy as IDocumentScanner.
@@ -36,19 +41,22 @@
         // Register OpenAIClient.
         services.AddSingleton<AzureOpenAIClient>(provider =>
         {
-            var endpoint = configuration["AzureOpenAPI:Endpoint"];
-            var apiKey = configuration["AzureOpenAPI:ApiKey"];
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var endpoint = configuration["AzureOpenAI:Endpoint"];
+            var apiKey = configuration["AzureOpenAI:ApiKey"];
             return new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
         });
 
         services.AddSingleton<Kernel>(provider =>
         {
-            var deploymentName = configuration[key: "AzureOpenAPI:Deployment"];
-            var endpoint = configuration[key: "AzureOpenAPI:Endpoint"];
-            var apiKey = configuration[key: "AzureOpenAPI:ApiKey"];
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var deploymentName = configuration[key: "AzureOpenAI:Deployment"];
+            var endpoint = configuration[key: "AzureOpenAI:Endpoint"];
+            var apiKey = configuration[key: "AzureOpenAI:ApiKey"];
+            var credential = new DefaultAzureCredential();
 
             IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
-            kernelBuilder.AddAzureOpenAIChatCompletion(deploymentName: deploymentName, endpoint: endpoint, apiKey: apiKey);
+            kernelBuilder.AddAzureOpenAIChatCompletion(deploymentName: deploymentName, endpoint: endpoint, credentials: credential);
             return kernelBuilder.Build();
         });
 
@@ -56,6 +64,7 @@
 
         services.AddSingleton<AgenticRouter>(provider =>
         {
+            var configuration = provider.GetRequiredService<IConfiguration>();
             var kernel = provider.GetRequiredService<Kernel>();
             var documentScanner = provider.GetRequiredService<IDocumentScanner>();
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
