@@ -6,14 +6,16 @@ public class AgenticRouter
     private ILogger<AgenticRouter> _logger;
     private IntentExtractorAgent _intentExtractorAgent;
     private PaymentAgent _paymentAgent;
+    private AccountAgent _accountAgent;
     private TransactionsReportingAgent _transactionsReportingAgent;
     private Kernel _kernel;
     public AgenticRouter(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, ILoggerFactory loggerFactory, IUserService userService)
     {
         _kernel = kernel;
         _intentExtractorAgent = new IntentExtractorAgent(kernel, configuration, loggerFactory.CreateLogger<IntentExtractorAgent>());
-        _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, loggerFactory, userService);
-        _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration, userService);
+        _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, loggerFactory);
+        _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration);
+        _accountAgent = new AccountAgent(kernel, configuration);
         _logger = loggerFactory.CreateLogger<AgenticRouter>();
     }
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -81,7 +83,7 @@ public class AgenticRouter
             };
 
         AgentGroupChat chat =
-            new(_paymentAgent.agent, _transactionsReportingAgent.agent)
+            new(_paymentAgent.agent, _transactionsReportingAgent.agent, _accountAgent.agent)
             {
                 ExecutionSettings = new() { SelectionStrategy = selectionStrategy, TerminationStrategy = terminationStrategy }
             };
