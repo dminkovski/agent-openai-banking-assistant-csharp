@@ -9,7 +9,7 @@ public static class ServicesExtensions
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
             var httpClient = new HttpClient();
             var transactionsApiUrl = configuration["BackendAPIs:TransactionsApiUrl"];
-            return new PaymentService(loggerFactory, httpClient, transactionsApiUrl);
+            return new PaymentService(loggerFactory.CreateLogger<PaymentService>(), httpClient, transactionsApiUrl);
         });
         return services;
     }
