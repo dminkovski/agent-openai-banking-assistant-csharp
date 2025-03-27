@@ -21,8 +21,7 @@ public record PaymentMethod(
     string availableBalance,
     // card number is valued only for credit card type
     string cardNumber
-)
-{ }
+);
 public record Beneficiary(
     string id,
     string fullName,
