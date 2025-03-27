@@ -52,13 +52,15 @@
             return kernelBuilder.Build();
         });
 
+        services.AddSingleton<IUserService, LoggedUserService>();
 
         services.AddSingleton<AgenticRouter>(provider =>
         {
             var kernel = provider.GetRequiredService<Kernel>();
             var documentScanner = provider.GetRequiredService<IDocumentScanner>();
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-            return new AgenticRouter(kernel, configuration, documentScanner, loggerFactory);
+            var userService = provider.GetRequiredService<IUserService>();
+            return new AgenticRouter(kernel, configuration, documentScanner, loggerFactory, userService);
         });
 
         return services;

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 public class PaymentAgent
 {
     public ChatCompletionAgent agent;
-    public PaymentAgent(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, ILoggerFactory loggerFactory)
+    public PaymentAgent(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, ILoggerFactory loggerFactory, IUserService userService)
     {
         Kernel toolKernel = kernel.Clone();
 
@@ -39,7 +39,7 @@ public class PaymentAgent
         new()
         {
             Name = "PaymentAgent",
-            Instructions = AgentInstructions.PaymentAgentInstructions,
+            Instructions = String.Format(AgentInstructions.PaymentAgentInstructions, userService.GetLoggedUser()),
             Kernel = toolKernel,
             Arguments =
             new KernelArguments(
