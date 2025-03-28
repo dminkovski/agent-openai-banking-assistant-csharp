@@ -1,5 +1,5 @@
 # Useful Kusto queries to inspect tools calls
-By default all Azure Open AI requests and response are logged in the java application logs.
+By default all Azure Open AI requests and response are logged in the .NET application logs.
 The following Kusto queries can be used to inspect the tools calls requests and responses.
 
 

@@ -75,12 +75,12 @@ param documentIntelligenceSkuName string = 'S0'
 param containerAppsEnvironmentName string = ''
 param containerRegistryName string = ''
 
-param copilotContainerAppName string = ''
+param bankingassistantContainerAppName string = ''
 param webContainerAppName string = ''
 param accountContainerAppName string = ''
 param transactionContainerAppName string = ''
 param paymentContainerAppName string = ''
-param copilotAppExists bool = false
+param bankingassistantAppExists bool = false
 param webAppExists bool = false
 param accountAppExists bool = false
 param paymentAppExists bool = false
@@ -141,20 +141,20 @@ module containerApps 'shared/host/container-apps.bicep' = {
   }
 }
 
-// Copilot backend
-module copilot 'app/copilot.bicep' = {
-  name: 'copilot'
+// Banking-Assistant backend
+module bankingassistant 'app/bankingassistant.bicep' = {
+  name: 'bankingassistant'
   scope: resourceGroup
   params: {
-    name: !empty(copilotContainerAppName) ? copilotContainerAppName : '${abbrs.appContainerApps}copilot-${resourceToken}'
+    name: !empty(bankingassistantContainerAppName) ? bankingassistantContainerAppName : '${abbrs.appContainerApps}bankingassistant-${resourceToken}'
     location: location
     tags: tags
-    identityName: '${abbrs.managedIdentityUserAssignedIdentities}copilot-${resourceToken}'
+    identityName: '${abbrs.managedIdentityUserAssignedIdentities}bankingassistant-${resourceToken}'
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     containerAppsEnvironmentName: containerApps.outputs.environmentName
     containerRegistryName: containerApps.outputs.registryName
     corsAcaUrl: ''
-    exists: copilotAppExists
+    exists: bankingassistantAppExists
     env: [
       {
         name: 'DOTNET_Storage__AccountName'
@@ -199,6 +199,14 @@ module copilot 'app/copilot.bicep' = {
       {
         name: 'DOTNET_AzureAd__TenantId'
         value: tenant().tenantId
+      }
+      {
+        name: 'DOTNET_ApplicationInsights__Active'
+        value: useApplicationInsights ? 'true' : 'false'
+      }
+      {
+        name: 'DOTNET_ApplicationInsights__ConnectionString'
+        value: monitoring.outputs.applicationInsightsConnectionString
       }
     ]
   }
@@ -273,7 +281,7 @@ module web 'app/web.bicep' = {
     location: location
     tags: tags
     identityName: '${abbrs.managedIdentityUserAssignedIdentities}web-${resourceToken}'
-    apiBaseUrl:  copilot.outputs.SERVICE_API_URI
+    apiBaseUrl:  bankingassistant.outputs.SERVICE_API_URI
     applicationInsightsName: monitoring.outputs.applicationInsightsName
     containerAppsEnvironmentName: containerApps.outputs.environmentName
     containerRegistryName: containerApps.outputs.registryName
@@ -360,7 +368,7 @@ module openAiRoleBackend 'shared/security/role.bicep' =  {
   scope: openAiResourceGroup
   name: 'openai-role-backend'
   params: {
-    principalId: copilot.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
+    principalId: bankingassistant.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
     principalType: 'ServicePrincipal'
   }
@@ -370,17 +378,17 @@ module storageRoleBackend 'shared/security/role.bicep' = {
   scope: storageResourceGroup
   name: 'storage-role-backend'
   params: {
-    principalId: copilot.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
+    principalId: bankingassistant.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     principalType: 'ServicePrincipal'
   }
 }
 
-module documentIntelligenceRoleCopilot 'shared/security/role.bicep' = {
+module documentIntelligenceRoleBankingassistant 'shared/security/role.bicep' = {
   scope: documentIntelligenceResourceGroup
-  name: 'documentIntelligence-role-copilot'
+  name: 'documentIntelligence-role-bankingassistant'
   params: {
-    principalId: copilot.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
+    principalId: bankingassistant.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
     roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
     principalType: 'ServicePrincipal'
   }
