@@ -4,8 +4,11 @@ using Microsoft.Extensions.Logging;
 public class PaymentAgent
 {
     public ChatCompletionAgent agent;
-    public PaymentAgent(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, ILoggerFactory loggerFactory, IUserService userService)
+    private ILogger<PaymentAgent> _logger;
+    public PaymentAgent(Kernel kernel, IConfiguration configuration, IDocumentScanner documentScanner, IUserService userService, ILoggerFactory loggerFactory)
     {
+        _logger = loggerFactory.CreateLogger<PaymentAgent>();
+
         Kernel toolKernel = kernel.Clone();
 
         var transactionApiURL = configuration["BackendAPIs:TransactionsApiUrl"];

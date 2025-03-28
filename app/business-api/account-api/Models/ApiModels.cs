@@ -12,8 +12,7 @@ public record PaymentMethodSummary(
     string type,
     string activationDate,
     string expirationDate
-)
-{ }
+);
 public record PaymentMethod(
     string id,
     string type,
@@ -22,13 +21,11 @@ public record PaymentMethod(
     string availableBalance,
     // card number is valued only for credit card type
     string cardNumber
-)
-{ }
+);
 public record Beneficiary(
     string id,
     string fullName,
     string bankCode,
     string bankName
-)
-{ }
+);
 

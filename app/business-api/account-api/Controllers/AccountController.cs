@@ -5,10 +5,10 @@ public class AccountsController : ControllerBase
     private readonly IAccountService _accountService;
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAccountService accountService, ILoggerFactory loggerFactory)
+    public AccountsController(IAccountService accountService, ILogger<AccountsController> logger)
     {
         _accountService = accountService;
-        _logger = loggerFactory.CreateLogger<AccountsController>();
+        _logger = logger;
     }
 
     [HttpGet("{accountId}")]

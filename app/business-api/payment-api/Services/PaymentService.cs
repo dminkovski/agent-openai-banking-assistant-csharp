@@ -13,11 +13,11 @@ using Microsoft.Extensions.Options;
         private readonly string _transactionApiUrl;
 
         public PaymentService(
-            ILoggerFactory loggerFactory,
+            ILogger<PaymentService> logger,
             HttpClient httpClient,
             string transactionApiURL)
         {
-            _logger = loggerFactory.CreateLogger<PaymentService>();
+            _logger = logger;
             _httpClient = httpClient;
             _transactionApiUrl = transactionApiURL;
         }
