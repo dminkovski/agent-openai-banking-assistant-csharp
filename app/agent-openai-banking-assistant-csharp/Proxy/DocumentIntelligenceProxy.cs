@@ -58,7 +58,7 @@ public class DocumentIntelligenceProxy : IDocumentScanner
                 scanData.Add("InvoiceId", invoiceIdField.ValueString);
             }
             if (analyzedInvoice.Fields.TryGetValue("InvoiceDate", out DocumentField invoiceDateField)
-                && invoiceDateField.FieldType == DocumentFieldType.Date)
+                && invoiceDateField.FieldType == DocumentFieldType.String)
             {
                 scanData.Add("InvoiceDate", invoiceDateField.ValueString);
             }

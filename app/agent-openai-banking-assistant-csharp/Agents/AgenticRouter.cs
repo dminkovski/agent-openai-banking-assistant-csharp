@@ -48,7 +48,7 @@ public class AgenticRouter
             AgentGroupChat.CreatePromptFunctionForStrategy(
                 $$$"""
                     Examine the RESPONSE and determine whether the content has been deemed satisfactory.
-                    Only if it contains 'success'.
+                    Only if you did what was asked of you and you received a confirmation you are done.
                     If no correction is suggested, it is satisfactory.
 
                     RESPONSE:
@@ -64,7 +64,7 @@ public class AgenticRouter
               ResultParser = (result) => result.GetValue<string>() ?? "",
               HistoryVariableName = "history",
               // Save tokens by not including the entire history in the prompt
-              HistoryReducer = new ChatHistoryTruncationReducer(3),
+              HistoryReducer = new ChatHistoryTruncationReducer(5),
           };
         // Create a chat using the defined selection strategy.
         KernelFunctionTerminationStrategy terminationStrategy =
@@ -77,7 +77,7 @@ public class AgenticRouter
                 // Limit total number of turns
                 MaximumIterations = 1,
                 // Customer result parser to determine if the response is "yes"
-                ResultParser = (result) => result.GetValue<string>()?.Contains("yes", StringComparison.OrdinalIgnoreCase) ?? false
+                // ResultParser = (result) => result.GetValue<string>()?.Contains("success", StringComparison.OrdinalIgnoreCase) ?? false
             };
 
         AgentGroupChat chat =
