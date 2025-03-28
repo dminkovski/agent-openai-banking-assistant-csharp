@@ -19,13 +19,21 @@ permissions:
 jobs:
   changes-detection:
     runs-on: ubuntu-latest
+    environment:
+        name: "Development"
     outputs:
       env-name: ${{steps.set-deploy-env.outputs.DEPLOY_ENVIRONMENT}}
       build-banking-assistant: ${{ steps.changes.outputs.banking-assistant }}
       build-frontend: ${{ steps.changes.outputs.frontend }}
       build-account-api: ${{ steps.changes.outputs.account-api }}
       build-payment-api: ${{ steps.changes.outputs.payment-api }}
-      build-transaction-api: ${{ steps.changes.outputs.transaction-api }}
+      build-transactions-api: ${{ steps.changes.outputs.transactions-api }}
+      aca-dev-env-name: ${{ vars.ACA_DEV_ENV_NAME }}
+      aca-accounts-app-name: ${{ vars.ACCOUNTS_ACA_DEV_APP_NAME }}
+      aca-transactions-app-name: ${{ vars.TRANSACTIONS_ACA_DEV_APP_NAME }}
+      aca-payments-app-name: ${{ vars.PAYMENTS_ACA_DEV_APP_NAME }}
+      aca-web-app-name: ${{ vars.WEB_ACA_DEV_APP_NAME }}
+      aca-copilot-app-name: ${{ vars.COPILOT_ACA_DEV_APP_NAME }}
     steps:
       - uses: actions/checkout@v2
       - name: Filter Changes
@@ -41,7 +49,7 @@ jobs:
                 - 'app/business-api/account-api/**'
               payment-api:
                 - 'app/business-api/payment-api/**'
-              transaction-api:
+              transactions-api:
                 - 'app/business-api/transactions-api/**'
 
       - name: Set environment for branch
@@ -61,7 +69,6 @@ jobs:
               echo "branch not detected. Set Development environment as default"
               echo "DEPLOY_ENVIRONMENT=Development" >> "$GITHUB_OUTPUT"
           fi
-
   build-account-app:
     needs: changes-detection
     if : ${{ needs.changes-detection.outputs.build-account-api == 'true' }}
@@ -69,7 +76,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/account-api
-      app-folder-path: ./app/business-api/account
+      app-folder-path: ./app/business-api/account-api
     secrets: inherit
   
   deploy-account-app:
@@ -79,29 +86,29 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/account-api
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
-      container-app-name: ${{ vars.ACCOUNTS_ACA_DEV_APP_NAME }}
+      container-app-env-name: ${{ needs.changes-detection.outputs.aca-dev-env-name }}
+      container-app-name: ${{ needs.changes-detection.outputs.aca-accounts-app-name }}
     secrets: inherit
 
-  build-transaction-app:
+  build-transactions-app:
     needs: changes-detection
-    if : ${{ needs.changes-detection.outputs.build-transaction-api == 'true' }}
+    if : ${{ needs.changes-detection.outputs.build-transactions-api == 'true' }}
     uses: ./.github/workflows/acr-build-push.yaml
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
-      image-name: agent-openai-banking-assistant-csharp/transactions-history-api
+      image-name: agent-openai-banking-assistant-csharp/transactions-api
       app-folder-path: ./app/business-api/transactions-api
     secrets: inherit
   
-  deploy-transaction-app:
-    needs: [changes-detection,build-transaction-app]
-    if: ${{ needs.changes-detection.outputs.build-transaction-api == 'true' }}
+  deploy-transactions-app:
+    needs: [changes-detection,build-transactions-app]
+    if: ${{ needs.changes-detection.outputs.build-transactions-api == 'true' }}
     uses: ./.github/workflows/aca-deploy.yaml
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/transactions-api
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
-      container-app-name: ${{ vars.TRANSACTIONS_ACA_DEV_APP_NAME }}
+      container-app-env-name: ${{ needs.changes-detection.outputs.aca-dev-env-name }}
+      container-app-name: ${{ needs.changes-detection.outputs.aca-transactions-app-name }}
     secrets: inherit
 
   build-payment-app:
@@ -111,7 +118,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/payment-api
-      app-folder-path: ./app/business-api/payment
+      app-folder-path: ./app/business-api/payment-api
     secrets: inherit
   
   deploy-payment-app:
@@ -121,8 +128,8 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/payment-api
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
-      container-app-name: ${{ vars.PAYMENTS_ACA_DEV_APP_NAME }}
+      container-app-env-name: ${{ needs.changes-detection.outputs.aca-dev-env-name }}
+      container-app-name: ${{ needs.changes-detection.outputs.aca-payments-app-name }}
     secrets: inherit
       
   build-frontend-app:
@@ -142,8 +149,8 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/web
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
-      container-app-name: ${{ vars.WEB_ACA_DEV_APP_NAME }}
+      container-app-env-name: ${{ needs.changes-detection.outputs.aca-dev-env-name }}
+      container-app-name: ${{ needs.changes-detection.outputs.aca-web-app-name }}
     secrets: inherit
   
   build-banking-assistant-app:
@@ -163,7 +170,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/banking-assistant
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
-      container-app-name: ${{ vars.COPILOT_ACA_DEV_APP_NAME }}
+      container-app-env-name: ${{ needs.changes-detection.outputs.aca-dev-env-name }}
+      container-app-name: ${{ needs.changes-detection.outputs.aca-copilot-app-name }}
     secrets: inherit
    

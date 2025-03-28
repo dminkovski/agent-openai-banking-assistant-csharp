@@ -6,7 +6,7 @@ param identityName string
 param applicationInsightsName string
 param containerAppsEnvironmentName string
 param containerRegistryName string
-param serviceName string = 'banking-assistant'
+param serviceName string = 'copilot'
 param corsAcaUrl string
 param exists bool
 
