@@ -10,6 +10,7 @@ services:
       - "5001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_BackendAPIs__TransactionsApiUrl=http://transactions-api:5002
     networks:
       - business-api-network
 

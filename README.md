@@ -2,7 +2,8 @@
 page_type: sample
 languages:
 - azdeveloper
-- java
+- dotnet
+- csharp
 - bicep
 - typescript
 - html
@@ -18,9 +19,9 @@ products:
 - document-intelligence
 - azure-monitor
 - azure-pipelines
-urlFragment: agent-openai-java-banking-assistant
-name: Multi Agents Banking Assistant with Java and Semantic Kernel
-description: A Java sample app emulating a personal banking AI-powered assistant to inquire about account balances, review recent transactions, or initiate payments
+urlFragment: agent-openai-banking-assistant-csharp
+name: Multi Agents Banking Assistant with .NET and Semantic Kernel
+description: A .NET sample app emulating a personal banking AI-powered assistant to inquire about account balances, review recent transactions, or initiate payments
 ---
 <!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
 <!-- prettier-ignore -->
@@ -28,11 +29,11 @@ description: A Java sample app emulating a personal banking AI-powered assistant
 
 ![](./docs/assets/robot-agents-small.png)
 
-# Multi Agents Banking Assistant with Java and Semantic Kernel
+# Multi Agents Banking Assistant with .NET and Semantic Kernel
 
-[![Open project in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?style=flat-square&logo=github)](https://codespaces.new/azure-samples/agent-openai-java-banking-assistant?hide_repo_select=true&ref=main&quickstart=true)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/azure-samples/agent-openai-java-banking-assistant/azure-dev.yaml?style=flat-square&label=Build)](https://github.com/azure-samples/agent-openai-java-banking-assistant/actions)
-![Java version](https://img.shields.io/badge/Java->=17-3c873a?style=flat-square)
+[![Open project in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?style=flat-square&logo=github)](https://codespaces.new/azure-samples/agent-openai-banking-assistant-csharp?hide_repo_select=true&ref=main&quickstart=true)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/azure-samples/agent-openai-banking-assistant-csharp/azure-dev.yaml?style=flat-square&label=Build)](https://github.com/azure-samples/agent-openai-banking-assistant-csharp/actions)
+![.NET version](https://img.shields.io/badge/dotnet%20version-net9.0-blue?style=flat-square)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 <!-- [![Watch how to use this sample on YouTube](https://img.shields.io/badge/YouTube-Watch-d95652.svg?style=flat-square&logo=youtube)]() -->
@@ -44,7 +45,7 @@ description: A Java sample app emulating a personal banking AI-powered assistant
 ![](./docs/assets/ui.gif)
 </div>
 
-This project is designed as a Proof of Concept (PoC) to explore the innovative realm of generative AI within the context of multi-agent architectures. By leveraging Java and Microsoft Semantic Kernel AI orchestration framework, our aim is to build a chat web app to demonstrate the feasibility and reliability of using generative AI agents to transform user experience from web clicks to natural language conversations while maximizing reuse of the existing workload data and APIs.
+This project is designed as a Proof of Concept (PoC) to explore the innovative realm of generative AI within the context of multi-agent architectures. By leveraging .NET and Microsoft Semantic Kernel AI orchestration framework, our aim is to build a chat web app to demonstrate the feasibility and reliability of using generative AI agents to transform user experience from web clicks to natural language conversations while maximizing reuse of the existing workload data and APIs.
 
 
 
@@ -57,13 +58,13 @@ Invoices samples are included in the data folder to make it easy to explore paym
 
 ## Features 
 This project provides the following features and technical patterns:
- - Simple multi ai agents Java implementation using *gpt-4o-mini* on Azure Open AI.
+ - Simple multi ai agents .NET implementation using *gpt-4o-mini* on Azure Open AI.
  - Chat intent extraction and agent routing.
- - Agents tools configuration and automatic tools invocations with [Java Semantic Kernel](https://github.com/microsoft/semantic-kernel-java/).
+ - Agents tools configuration and automatic tools invocations with [.NET Semantic Kernel](https://github.com/microsoft/semantic-kernel/).
  - Tools output cache scoped at chat conversation level.It improves functions call planning and parameters extraction for long chat.
  - Chat based conversation implemented as [React Single Page Application](https://react.fluentui.dev/?path=/docs/concepts-introduction--docs) with support for images upload.Supported images are invoices, receipts, bills jpeg/png files you want your virtual banking assistant to pay on your behalf.
  - Images scanning and data extraction with Azure Document Intelligence using [prebuilt-invoice](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/concept-invoice?view=doc-intel-4.0.0) model.
- - Import REST api contracts (OpenAPI yaml files) as agent tools, providing automatic rest client call. It uses code from Java Semantic Kernel [open-api-plugin code sample](https://github.com/microsoft/semantic-kernel-java/tree/main/samples/semantickernel-sample-plugins/semantickernel-openapi-plugin).
+ - Import REST api contracts (OpenAPI yaml files) as agent tools, providing automatic rest client call.
  - Add a copilot app side-by-side to your existing business microservices hosted on [Azure Container Apps](https://azure.microsoft.com/en-us/products/container-apps).
  - Automated Azure resources creation and solution deployment leveraging [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/).
 
@@ -73,7 +74,7 @@ For complex agents conversation implementation, read more about [Autogen framewo
 ![HLA](docs/assets/HLA.png)
 The personal banking assistant is designed as a [vertical multi-agent system](./docs/multi-agents/introduction.md), with each agent specializing in a specific functional domain (e.g., account management, transaction history, payments). The architecture consists of the following key components:
 
-- **Copilot Assistant Copilot App (Microservice)**: Serves as the central hub for processing user requests. It's a spring boot application implementing a vertical multi-agent architectures using Java Semantic Kernel to create Agents equipped with tools. in Java the Agent Router to understand user intent from chat interactions and routes the request to the appropriate domain-specific agent.
+- **Copilot Assistant Copilot App (Microservice)**: Serves as the central hub for processing user requests. It's a spring boot application implementing a vertical multi-agent architectures using .NET Semantic Kernel to create Agents equipped with tools. The Agent Router is used to understand user intent from chat interactions and routes the request to the appropriate domain-specific agent.
     - **Agent Router**: Acts as a user proxy, interpreting user intent based on chat inputs and directing the request to the specific domain agent. This component ensures that user queries are efficiently handled by the relevant agent. It uses **IntentExtractor** tool backed by GPT4 model to extract the user intent in a json format. If intent is 'None' clarifying questions are provided. 
 
     - **Account Agent**: Specializes in handling tasks related to banking account information, credit balance, and registered payment methods. It leverages specific Account service APIs to fetch and manage account-related data. Semantic Kernel HTTP plugin is used to create a tool definition from the rest api yaml contract (Open API specification) and automatically call the HTTP endpoint with input parameters extracted by gpt4 model from the chat conversation.
@@ -95,15 +96,14 @@ The personal banking assistant is designed as a [vertical multi-agent system](./
 
 You can run this repo virtually by using GitHub Codespaces or VS Code Dev Containers.  Click on one of the buttons below to open this repo in one of those options.
 
-[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/azure-samples/agent-openai-java-banking-assistant?hide_repo_select=true&ref=main&quickstart=true)
-[![Open in VS Code Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Remote%20-%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/agent-openai-java-banking-assistant/)
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/azure-samples/agent-openai-banking-assistant-csharp?hide_repo_select=true&ref=main&quickstart=true)
+[![Open in VS Code Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Remote%20-%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/agent-openai-banking-assistant-csharp/)
 
 All prerequisites are already installed in the container.  You can skip to the [Starting from scratch](#starting-from-scratch) section.
 
 ### Prerequisites
 
-* [Java 17](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
-* [Maven 3.8.x](https://maven.apache.org/download.cgi)
+* [.NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-9.0.202-windows-x64-installer)
 * [Azure Developer CLI](https://aka.ms/azure-dev/install)
 * [Node.js](https://nodejs.org/en/download/)
 * [Git](https://git-scm.com/downloads)
@@ -115,7 +115,7 @@ All prerequisites are already installed in the container.  You can skip to the [
 
 ### Starting from scratch
 
-You can clone this repo and change directory to the root of the repo. Or you can run `azd init -t Azure-Samples/agent-openai-java-banking-assistant`.
+You can clone this repo and change directory to the root of the repo. Or you can run `azd init -t Azure-Samples/agent-openai-banking-assistant-csharp`.
 
 Once you have the project available locally, run the following commands if you don't have any pre-existing Azure services and want to start from a fresh deployment.
 
@@ -192,7 +192,7 @@ azd up
  > When you run `azd up` multiple times to redeploy infrastructure, make sure to set the following parameters in `infra/main.parameters.json` to `true` to avoid container apps images from being overridden with default "mcr.microsoft.com/azuredocs/containerapps-helloworld" image:
 
 ```json
- "copilotAppExists": {
+ "bankingassistantAppExists": {
       "value": false
     },
     "webAppExists": {
@@ -250,11 +250,11 @@ If you want to disable it set the `AZURE_USE_APPLICATION_INSIGHTS` variable to f
 
 To see the performance data, go to the Application Insights resource in your resource group, click on the "Investigate -> Performance" blade and navigate to any HTTP request to see the timing data.
 To inspect the performance of chat requests, use the "Drill into Samples" button to see end-to-end traces of all the API calls made for any chat request.
-Under "Trace & Events" panel you can review custom Java informational logs to better understand content of OpenAI requests and responses.
+Under "Trace & Events" panel you can review custom .NET informational logs to better understand content of OpenAI requests and responses.
 
 ![Tracing screenshot](docs/assets/transaction-tracing.png)
 
-To see any exceptions and server errors, navigate to the "Investigate -> Failures" blade and use the filtering tools to locate a specific exception. You can see Java stack traces on the right-hand side.
+To see any exceptions and server errors, navigate to the "Investigate -> Failures" blade and use the filtering tools to locate a specific exception. You can see .NET stack traces on the right-hand side.
 
 ### Enabling authentication
 
@@ -271,7 +271,7 @@ To then limit access to a specific set of users or groups, you can follow the st
     
     ```bash
     groupId=$(az group show --name <resource-group-name>  --query id --output tsv)
-    az ad sp create-for-rbac --name "agent-openai-java-banking-assistant-pipeline-spi" --role contributor --scope $groupId --sdk-auth
+    az ad sp create-for-rbac --name "agent-openai-banking-assistant-csharp-pipeline-spi" --role contributor --scope $groupId --sdk-auth
     ```
     Output is similar to:
     
@@ -354,11 +354,11 @@ Here are some resources to learn more about multi-agent architectures and techno
 
 - [Generative AI For Beginners](https://github.com/microsoft/generative-ai-for-beginners)
 - [Azure OpenAI Service](https://learn.microsoft.com/azure/ai-services/openai/overview)
-- [Semantic Kernel for Java](https://devblogs.microsoft.com/semantic-kernel/java-1-0-release-candidate-for-semantic-kernel-now-available/)
+- [Semantic Kernel](https://devblogs.microsoft.com/semantic-kernel)
 - [OpenAI's Bet on a Cognitive Architecture](https://blog.langchain.dev/openais-bet-on-a-cognitive-architecture/)
 - [THE LANDSCAPE OF EMERGING AI AGENT ARCHITECTURES FOR REASONING, PLANNING, AND TOOL CALLING: A SURVEY](https://arxiv.org/pdf/2404.11584)
 - [MicroAgents: Exploring Agentic Architecture with Microservices](https://devblogs.microsoft.com/semantic-kernel/microagents-exploring-agentic-architecture-with-microservices/)
-- [Chat + Enterprise data with Azure OpenAI and Azure AI Search](https://github.com/Azure-Samples/azure-search-openai-java)
+- [Chat + Enterprise data with Azure OpenAI and Azure AI Search](https://github.com/Azure-Samples/azure-search-openai-demo-csharp)
 - [SK Agents Overview and High Level Design (.net)](https://github.com/microsoft/semantic-kernel/blob/ec26ce7cb70f933b52a62f0a4e1c7b98c49d590e/docs/decisions/0032-agents.md#usage-patterns)
 
 You can also find [more Azure AI samples here](https://github.com/Azure-Samples/azureai-samples).
@@ -369,7 +369,7 @@ You can find answers to frequently asked questions in the [FAQ](./docs/faq.md).
 
 ## Troubleshooting
 
-If you have any issue when running or deploying this sample, please check the [troubleshooting guide](./docs/troubleshooting.md). If you can't find a solution to your problem, please [open an issue](https://github.com/Azure-Samples/agent-openai-java-banking-assistant/issues) in this repository.
+If you have any issue when running or deploying this sample, please check the [troubleshooting guide](./docs/troubleshooting.md). If you can't find a solution to your problem, please [open an issue](https://github.com/Azure-Samples/agent-openai-banking-assistant-csharp/issues) in this repository.
 
 ## Contributing
 

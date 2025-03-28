@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload alerts to Security tab
         uses: github/codeql-action/upload-sarif@v2
-        if: github.repository == 'Azure-Samples/azure-search-openai-demo-java'
+        if: github.repository == 'Azure-Samples/agent-openai-banking-assistant-csharp'
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
 

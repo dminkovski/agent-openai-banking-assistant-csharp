@@ -27,17 +27,17 @@ roles=(
 )
 
 #Check if service principal exists
-export servicePrincipal=$(az ad sp list --display-name "agent-java-banking-spi" --query [].appId --output tsv)
+export servicePrincipal=$(az ad sp list --display-name "agent-banking-csharp-spi" --query [].appId --output tsv)
 
 if [ -z "$servicePrincipal" ]; then
     echo "Service principal not found. Creating service principal..."
-    export servicePrincipal=$(az ad sp create-for-rbac --name "agent-java-banking-spi" --role reader --scopes /subscriptions/"$AZURE_SUBSCRIPTION_ID"/resourceGroups/"$AZURE_RESOURCE_GROUP" --query appId --output tsv)
+    export servicePrincipal=$(az ad sp create-for-rbac --name "agent-banking-csharp-spi" --role reader --scopes /subscriptions/"$AZURE_SUBSCRIPTION_ID"/resourceGroups/"$AZURE_RESOURCE_GROUP" --query appId --output tsv)
     if [ $? -ne 0 ]; then
         echo "Failed to create service principal"
         exit $?
     fi
     export servicePrincipalObjectId=$(az ad sp show --id "$servicePrincipal" --query id --output tsv)
-    echo "Assigning Roles to service principal agent-java-banking-spi with principal id:$servicePrincipal and object id[$servicePrincipalObjectId]"
+    echo "Assigning Roles to service principal agent-banking-csharp-spi with principal id:$servicePrincipal and object id[$servicePrincipalObjectId]"
     for role in "${roles[@]}"; do
         
         echo "Assigning Role[$role] to principal id[$servicePrincipal] for resource[/subscriptions/"$AZURE_SUBSCRIPTION_ID"/resourceGroups/"$AZURE_RESOURCE_GROUP"] "

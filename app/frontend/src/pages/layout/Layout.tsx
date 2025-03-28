@@ -1,12 +1,9 @@
-import { Outlet, NavLink, Link } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 import github from "../../assets/github.svg";
-
-import styles from "./Layout.module.css";
-
 import { useLogin } from "../../authConfig";
-
 import { LoginButton } from "../../components/LoginButton";
+import styles from "./Layout.module.css";
 
 const Layout = () => {
     return (
@@ -14,7 +11,7 @@ const Layout = () => {
             <header className={styles.header} role={"banner"}>
                 <div className={styles.headerContainer}>
                     <Link to="/" className={styles.headerTitleContainer}>
-                        <h3 className={styles.headerTitle}>Agents Java Sample</h3>
+                        <h3 className={styles.headerTitle}>Agents .NET Sample</h3>
                     </Link>
                     <nav>
                         <ul className={styles.headerNavList}>
@@ -25,7 +22,7 @@ const Layout = () => {
                             </li>
 
                             <li className={styles.headerNavLeftMargin}>
-                                <a href="https://github.com/dantelmomsft/personal-finance-assistant-java" target={"_blank"} title="Github repository link">
+                                <a href="https://github.com/dminkovski/agent-openai-banking-assistant-csharp" target={"_blank"} title="Github repository link">
                                     <img
                                         src={github}
                                         alt="Github logo"

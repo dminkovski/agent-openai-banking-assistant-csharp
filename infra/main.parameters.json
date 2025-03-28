@@ -63,7 +63,7 @@
       "value": "${AZURE_USE_APPLICATION_INSIGHTS=true}"
     }
     ,
-    "copilotAppExists": {
+    "bankingassistantAppExists": {
       "value": false
     },
     "webAppExists": {
