@@ -2,8 +2,10 @@
 public class TransactionsReportingAgent
 {
     public ChatCompletionAgent agent;
-    public TransactionsReportingAgent(Kernel kernel, IConfiguration configuration, IUserService userService)
+    private ILogger _logger;
+    public TransactionsReportingAgent(Kernel kernel, IConfiguration configuration, IUserService userService, ILogger<TransactionsReportingAgent> logger)
     {
+        _logger = logger;
         Kernel toolKernel = kernel.Clone();
 
         var transactionApiURL = configuration["BackendAPIs:TransactionsApiUrl"];

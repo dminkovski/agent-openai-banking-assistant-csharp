@@ -2,6 +2,6 @@
 {
     public interface IDocumentScanner
     {
-        public Dictionary<string, string> Scan(String fileName);
+        public Task<Dictionary<string, string>> Scan(string fileName);
     }
 }

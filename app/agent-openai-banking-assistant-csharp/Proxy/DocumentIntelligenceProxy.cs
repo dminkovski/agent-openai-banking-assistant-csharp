@@ -17,12 +17,13 @@ public class DocumentIntelligenceProxy : IDocumentScanner
         _logger = loggerFactory.CreateLogger<DocumentIntelligenceProxy>();
     }
 
-    public Dictionary<string, string> Scan(string fileName)
+    public async Task<Dictionary<string, string>> Scan(string fileName)
     {
-        Uri uriSource = _blobStorageProxy.GetFileUri(fileName);
-        _logger.LogInformation($"Scanning: {uriSource.ToString()}");
+        byte[] image = await _blobStorageProxy.GetFileAsBytesAsync(fileName);
+        _logger.LogInformation($"Scanning: {fileName} {image.Length}");
+        Console.WriteLine($"Scanning: {fileName} {image.Length}");
         string modelId = "prebuilt-invoice";
-        Operation<AnalyzeResult> operation = _documentIntelligenceClient.AnalyzeDocument(WaitUntil.Completed, modelId, uriSource);
+        Operation<AnalyzeResult> operation = _documentIntelligenceClient.AnalyzeDocument(WaitUntil.Completed, modelId, BinaryData.FromBytes(image));
         AnalyzeResult result = operation.Value;
 
         Dictionary<string, string> scanData = new Dictionary<string, string>();
@@ -57,7 +58,7 @@ public class DocumentIntelligenceProxy : IDocumentScanner
                 scanData.Add("InvoiceId", invoiceIdField.ValueString);
             }
             if (analyzedInvoice.Fields.TryGetValue("InvoiceDate", out DocumentField invoiceDateField)
-                && invoiceDateField.FieldType == DocumentFieldType.Date)
+                && invoiceDateField.FieldType == DocumentFieldType.String)
             {
                 scanData.Add("InvoiceDate", invoiceDateField.ValueString);
             }

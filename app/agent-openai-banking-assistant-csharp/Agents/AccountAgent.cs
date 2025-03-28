@@ -9,8 +9,9 @@ public class AccountAgent
     private readonly ILogger<AccountAgent> _logger;
 
 
-    public AccountAgent(Kernel kernel, IConfiguration configuration)
+    public AccountAgent(Kernel kernel, IConfiguration configuration, ILogger<AccountAgent> logger)
     {
+        _logger = logger;
         Kernel toolKernel = kernel.Clone();
 
         var accountsApiURL = configuration["BackendAPIs:AccountsApiUrl"];

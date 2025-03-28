@@ -20,7 +20,7 @@
             If an intent is identified return the output as json format as below
             {
             "intent": "BillPayment"
-                }
+            }
 
             If you don't understand or if an intent is not identified be polite with the user, ask clarifying question also using the list of the available intents. 
             Don't add any comments in the output or other characters, just use json format.

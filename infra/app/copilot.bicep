@@ -39,7 +39,10 @@ module app '../shared/host/container-app-upsert.bicep' = {
         name: 'AZURE_CLIENT_ID'
         value: apiIdentity.properties.clientId
       }
-      
+      {
+        name: 'DOTNET_AzureAd__ClientId'
+        value: apiIdentity.properties.clientId
+      }
       {
         name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
         value: applicationInsights.properties.ConnectionString

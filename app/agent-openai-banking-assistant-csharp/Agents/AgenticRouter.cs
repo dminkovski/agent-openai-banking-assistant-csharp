@@ -13,9 +13,9 @@ public class AgenticRouter
     {
         _kernel = kernel;
         _intentExtractorAgent = new IntentExtractorAgent(kernel, configuration, loggerFactory.CreateLogger<IntentExtractorAgent>());
-        _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, loggerFactory);
-        _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration);
-        _accountAgent = new AccountAgent(kernel, configuration);
+        _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration, userService, loggerFactory.CreateLogger<TransactionsReportingAgent>());
+        _accountAgent = new AccountAgent(kernel, configuration, loggerFactory.CreateLogger<AccountAgent>());
+        _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, userService, loggerFactory);
         _logger = loggerFactory.CreateLogger<AgenticRouter>();
     }
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -50,7 +50,7 @@ public class AgenticRouter
             AgentGroupChat.CreatePromptFunctionForStrategy(
                 $$$"""
                     Examine the RESPONSE and determine whether the content has been deemed satisfactory.
-                    Only if it contains 'success'.
+                    Only if you did what was asked of you and you received a confirmation you are done.
                     If no correction is suggested, it is satisfactory.
 
                     RESPONSE:
@@ -66,7 +66,7 @@ public class AgenticRouter
               ResultParser = (result) => result.GetValue<string>() ?? "",
               HistoryVariableName = "history",
               // Save tokens by not including the entire history in the prompt
-              HistoryReducer = new ChatHistoryTruncationReducer(3),
+              HistoryReducer = new ChatHistoryTruncationReducer(5),
           };
         // Create a chat using the defined selection strategy.
         KernelFunctionTerminationStrategy terminationStrategy =
@@ -79,7 +79,7 @@ public class AgenticRouter
                 // Limit total number of turns
                 MaximumIterations = 1,
                 // Customer result parser to determine if the response is "yes"
-                ResultParser = (result) => result.GetValue<string>()?.Contains("yes", StringComparison.OrdinalIgnoreCase) ?? false
+                // ResultParser = (result) => result.GetValue<string>()?.Contains("success", StringComparison.OrdinalIgnoreCase) ?? false
             };
 
         AgentGroupChat chat =

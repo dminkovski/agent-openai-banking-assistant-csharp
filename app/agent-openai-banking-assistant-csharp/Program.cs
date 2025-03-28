@@ -5,6 +5,16 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true)
+    .AddEnvironmentVariables("DOTNET_");
+
+var configuration = builder.Configuration;
+var allKeys = configuration.AsEnumerable();
+foreach (var kvp in allKeys)
+{
+    Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
+}
 
 // @TODO: Temporary. Fix later.
 builder.Services.AddCors(options => options.AddPolicy("allowSpecificOrigins", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
@@ -28,7 +38,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<ILoggerFactory>(LoggerFactory.Create(builder => builder.AddConsole()));
 
 // Use the custom extension method to register azure services.
-builder.Services.AddAzureServices(builder.Configuration);
+builder.Services.AddAzureServices();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

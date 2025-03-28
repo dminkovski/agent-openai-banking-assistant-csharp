@@ -15,13 +15,13 @@ public class InvoiceScanPlugin
     }
     [KernelFunction("scanInvoice")]
     [Description("Extract the invoice or bill data scanning a photo or image")]
-    public string ScanInvoice([DescriptionAttribute("the path to the file containing the image or photo")] string filePath) {
+    public async Task<string> ScanInvoice([DescriptionAttribute("the path to the file containing the image or photo")] string filePath) {
 
         Dictionary<string, string> scanData = null;
         _logger.LogInformation($"Attempting to scan: {filePath}");
 
         try{
-            scanData = _documentScanner.Scan(filePath);
+            scanData = await _documentScanner.Scan(filePath);
         } catch (Exception e) {
           _logger.LogError($"Error extracting data from invoice {filePath}: {e.ToString()}");
             scanData = new();

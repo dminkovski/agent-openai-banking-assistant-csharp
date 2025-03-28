@@ -2,8 +2,8 @@
 {
     public interface IBlobStorage
     {
-        public Task<string> GetFileAsString(string fileName);
-        public Task StoreFile(string fileName, Stream content);
+        public Task<byte[]> GetFileAsBytesAsync(string fileName);
+        public Task StoreFileAsync(string fileName, Stream content);
 
         public Uri GetFileUri(string fileName);
     }
