@@ -192,7 +192,7 @@ azd up
  > When you run `azd up` multiple times to redeploy infrastructure, make sure to set the following parameters in `infra/main.parameters.json` to `true` to avoid container apps images from being overridden with default "mcr.microsoft.com/azuredocs/containerapps-helloworld" image:
 
 ```json
- "bankingassistantAppExists": {
+ "copilotAppExists": {
       "value": false
     },
     "webAppExists": {
