@@ -4,7 +4,7 @@ name: personal-finance-assistance-dotnet
 metadata:
   template: agent-openai-dotnet-banking-assistant@1.0.0-alpha
 services:
-  bankingassistant:
+  copilot:
     project: app/banking-assistant
     language: dotnet
     host: containerapp
