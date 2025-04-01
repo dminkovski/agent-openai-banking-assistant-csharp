@@ -5,12 +5,15 @@ param applicationInsightsDashboardName string = ''
 param location string = resourceGroup().location
 param tags object = {}
 
-module logAnalytics 'loganalytics.bicep' = {
-  name: 'loganalytics'
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.0' = {
+  name: 'workspaceDeployment'
   params: {
+    // Required parameters
     name: logAnalyticsName
+    // Non-required parameters
     location: location
     tags: tags
+    skuName: 'PerGB2018'
   }
 }
 
@@ -21,7 +24,7 @@ module applicationInsights 'applicationinsights.bicep' = {
     location: location
     tags: tags
     dashboardName: applicationInsightsDashboardName
-    logAnalyticsWorkspaceId: logAnalytics.outputs.id
+    logAnalyticsWorkspaceId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -29,6 +32,6 @@ output applicationInsightsConnectionString string = applicationInsights.outputs.
 output applicationInsightsId string = applicationInsights.outputs.id
 output applicationInsightsInstrumentationKey string = applicationInsights.outputs.instrumentationKey
 output applicationInsightsName string = applicationInsights.outputs.name
-output logAnalyticsWorkspaceId string = logAnalytics.outputs.id
-output logAnalyticsWorkspaceName string = logAnalytics.outputs.name
+output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+output logAnalyticsWorkspaceName string = logAnalyticsWorkspace.outputs.name
 

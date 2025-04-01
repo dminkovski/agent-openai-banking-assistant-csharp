@@ -9,33 +9,24 @@ param applicationInsightsName string = ''
 @description('Specifies if Dapr is enabled')
 param daprEnabled bool = false
 
-@description('Name of the Log Analytics workspace')
-param logAnalyticsWorkspaceName string
+param logAnalyticsWorkspaceId string
+param applicationInsightsInstrumentationKey string
 
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
-  name: name
-  location: location
-  tags: tags
-  properties: {
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: logAnalyticsWorkspace.properties.customerId
-        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-      }
-    }
-    daprAIInstrumentationKey: daprEnabled && !empty(applicationInsightsName) ? applicationInsights.properties.InstrumentationKey : ''
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.10.0' = {
+  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceId
+    logsDestination: 'log-analytics'
+    name: name
+    location: location
+    tags: tags
+    daprAIInstrumentationKey: daprEnabled && !empty(applicationInsightsName) ? applicationInsightsInstrumentationKey : ''
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: logAnalyticsWorkspaceName
-}
 
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (daprEnabled && !empty(applicationInsightsName)) {
-  name: applicationInsightsName
-}
 
-output defaultDomain string = containerAppsEnvironment.properties.defaultDomain
-output id string = containerAppsEnvironment.id
-output name string = containerAppsEnvironment.name
+output defaultDomain string = managedEnvironment.outputs.defaultDomain
+output id string = managedEnvironment.outputs.resourceId
+output name string = managedEnvironment.outputs.name

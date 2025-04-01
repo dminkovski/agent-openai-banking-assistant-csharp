@@ -5,14 +5,15 @@ param location string = resourceGroup().location
 param tags object = {}
 param logAnalyticsWorkspaceId string
 
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: name
-  location: location
-  tags: tags
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspaceId
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+  name: 'componentDeployment'
+  params: {
+    name: name
+    workspaceResourceId: logAnalyticsWorkspaceId
+    location: location
+    kind: 'web'
+    applicationType: 'web'
+    tags: tags
   }
 }
 
@@ -25,7 +26,7 @@ module applicationInsightsDashboard 'applicationinsights-dashboard.bicep' = if (
   }
 }
 
-output connectionString string = applicationInsights.properties.ConnectionString
-output id string = applicationInsights.id
-output instrumentationKey string = applicationInsights.properties.InstrumentationKey
+output connectionString string = applicationInsights.outputs.connectionString
+output id string = applicationInsights.outputs.resourceId
+output instrumentationKey string = applicationInsights.outputs.instrumentationKey
 output name string = applicationInsights.name

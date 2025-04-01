@@ -58,14 +58,15 @@ public class DocumentIntelligenceProxy : IDocumentScanner
                 scanData.Add("InvoiceId", invoiceIdField.ValueString);
             }
             if (analyzedInvoice.Fields.TryGetValue("InvoiceDate", out DocumentField invoiceDateField)
-                && invoiceDateField.FieldType == DocumentFieldType.String)
+                && invoiceDateField.FieldType == DocumentFieldType.Date)
             {
-                scanData.Add("InvoiceDate", invoiceDateField.ValueString);
+                scanData.Add("InvoiceDate", invoiceDateField.ValueDate.ToString());
             }
             if (analyzedInvoice.Fields.TryGetValue("InvoiceTotal", out DocumentField invoiceTotalField)
-                && invoiceTotalField.FieldType == DocumentFieldType.String)
+                && invoiceTotalField.FieldType == DocumentFieldType.Currency)
             {
-                scanData.Add("InvoiceTotal", invoiceTotalField.ValueString);
+                CurrencyValue invoiceTotal = invoiceTotalField.ValueCurrency;
+                scanData.Add("InvoiceTotal", $"{ invoiceTotal.CurrencySymbol}{ invoiceTotal.Amount}");
             }
 
         }

@@ -136,7 +136,8 @@ module containerApps 'shared/host/container-apps.bicep' = {
     tags: tags
     containerAppsEnvironmentName: !empty(containerAppsEnvironmentName) ? containerAppsEnvironmentName : '${abbrs.appManagedEnvironments}${resourceToken}'
     containerRegistryName: !empty(containerRegistryName) ? containerRegistryName : '${abbrs.containerRegistryRegistries}${resourceToken}'
-    logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsWorkspaceName
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    applicationInsightsInstrumentationKey: monitoring.outputs.applicationInsightsInstrumentationKey
     applicationInsightsName: monitoring.outputs.applicationInsightsName
   }
 }
@@ -150,9 +151,9 @@ module copilot 'app/copilot.bicep' = {
     location: location
     tags: tags
     identityName: '${abbrs.managedIdentityUserAssignedIdentities}copilot-${resourceToken}'
-    applicationInsightsName: monitoring.outputs.applicationInsightsName
-    containerAppsEnvironmentName: containerApps.outputs.environmentName
+    applicationInsightsConnectionString: monitoring.outputs.applicationInsightsConnectionString
     containerRegistryName: containerApps.outputs.registryName
+    environmentResourceId: containerApps.outputs.environmentId
     corsAcaUrl: ''
     exists: copilotAppExists
     env: [

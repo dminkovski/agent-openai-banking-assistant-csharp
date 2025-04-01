@@ -3,13 +3,11 @@ param name string
 param applicationInsightsName string
 param location string = resourceGroup().location
 param tags object = {}
-
-// 2020-09-01-preview because that is the latest valid version
-resource applicationInsightsDashboard 'Microsoft.Portal/dashboards@2020-09-01-preview' = {
-  name: name
-  location: location
-  tags: tags
-  properties: {
+module dashboard 'br/public:avm/res/portal/dashboard:0.3.0' = {
+  name: 'dashboardDeployment'
+  params: {
+    name: name
+    location: location
     lenses: [
       {
         order: 0
@@ -1228,6 +1226,7 @@ resource applicationInsightsDashboard 'Microsoft.Portal/dashboards@2020-09-01-pr
         ]
       }
     ]
+    tags: tags
   }
 }
 

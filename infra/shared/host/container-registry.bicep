@@ -17,18 +17,10 @@ param azureADAuthenticationAsArmPolicy object = {
 @description('Indicates whether data endpoint is enabled')
 param dataEndpointEnabled bool = false
 
-@description('Encryption settings')
-param encryption object = {
-  status: 'disabled'
-}
-
 @description('Export policy settings')
 param exportPolicy object = {
   status: 'enabled'
 }
-
-@description('Metadata search settings')
-param metadataSearch string = 'Disabled'
 
 @description('Options for bypassing network rules')
 param networkRuleBypassOptions string = 'AzureServices'
@@ -73,65 +65,53 @@ param zoneRedundancy string = 'Disabled'
 @description('The log analytics workspace ID used for logging and monitoring')
 param workspaceId string = ''
 
-// 2023-11-01-preview needed for metadataSearch
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
-  name: name
-  location: location
-  tags: tags
-  sku: sku
-  properties: {
-    adminUserEnabled: adminUserEnabled
+module registry 'br/public:avm/res/container-registry/registry:0.9.0' = {
+  name: 'registryDeployment'
+  params: {
+    name: name
+    location: location
+    tags: tags
+    acrSku: sku.name
+    acrAdminUserEnabled: adminUserEnabled
     anonymousPullEnabled: anonymousPullEnabled
     dataEndpointEnabled: dataEndpointEnabled
-    encryption: encryption
-    metadataSearch: metadataSearch
     networkRuleBypassOptions: networkRuleBypassOptions
-    policies:{
-      quarantinePolicy: quarantinePolicy
-      trustPolicy: trustPolicy
-      retentionPolicy: retentionPolicy
-      exportPolicy: exportPolicy
-      azureADAuthenticationAsArmPolicy: azureADAuthenticationAsArmPolicy
-      softDeletePolicy: softDeletePolicy
-    }
+    quarantinePolicyStatus: quarantinePolicy.status
+    trustPolicyStatus: trustPolicy.status
+    retentionPolicyDays: retentionPolicy.days
+    retentionPolicyStatus: retentionPolicy.status
+    exportPolicyStatus: exportPolicy.status
+    azureADAuthenticationAsArmPolicyStatus: azureADAuthenticationAsArmPolicy.status
+    softDeletePolicyDays: softDeletePolicy.retentionDays
+    softDeletePolicyStatus: softDeletePolicy.status
     publicNetworkAccess: publicNetworkAccess
     zoneRedundancy: zoneRedundancy
-  }
-
-  resource scopeMap 'scopeMaps' = [for scopeMap in scopeMaps: {
-    name: scopeMap.name
-    properties: scopeMap.properties
-  }]
-}
-
-// TODO: Update diagnostics to be its own module
-// Blocking issue: https://github.com/Azure/bicep/issues/622
-// Unable to pass in a `resource` scope or unable to use string interpolation in resource types
-resource diagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(workspaceId)) {
-  name: 'registry-diagnostics'
-  scope: containerRegistry
-  properties: {
-    workspaceId: workspaceId
-    logs: [
+    scopeMaps: scopeMaps
+    diagnosticSettings: [
       {
-        category: 'ContainerRegistryRepositoryEvents'
-        enabled: true
-      }
-      {
-        category: 'ContainerRegistryLoginEvents'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-        timeGrain: 'PT1M'
+        logCategoriesAndGroups:[
+          {
+            category: 'ContainerRegistryRepositoryEvents'
+            enabled: true
+          }
+          {
+            category: 'ContainerRegistryLoginEvents'
+            enabled: true
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+            enabled: true
+          }
+        ]
+        name: 'registry-diagnostics'
+        workspaceResourceId: workspaceId
       }
     ]
   }
 }
 
-output id string = containerRegistry.id
-output loginServer string = containerRegistry.properties.loginServer
-output name string = containerRegistry.name
+output id string = registry.outputs.resourceId
+output loginServer string = registry.outputs.loginServer
+output name string = registry.outputs.name
