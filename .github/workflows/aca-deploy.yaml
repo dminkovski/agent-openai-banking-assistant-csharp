@@ -24,7 +24,8 @@ permissions:
 jobs:
     deploy:
         runs-on: ubuntu-latest
-        environment: ${{ inputs.env-name }}
+        environment: 
+          name: ${{ inputs.env-name }}
         steps:
         - name: Log in to Azure with service principal
           uses: azure/login@v2
