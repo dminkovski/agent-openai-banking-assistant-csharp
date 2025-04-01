@@ -25,7 +25,7 @@ jobs:
       build-frontend: ${{ steps.changes.outputs.frontend }}
       build-account-api: ${{ steps.changes.outputs.account-api }}
       build-payment-api: ${{ steps.changes.outputs.payment-api }}
-      build-transaction-api: ${{ steps.changes.outputs.transaction-api }}
+      build-transactions-api: ${{ steps.changes.outputs.transactions-api }}
     steps:
       - uses: actions/checkout@v2
       - name: Filter Changes
@@ -41,7 +41,7 @@ jobs:
                 - 'app/business-api/account-api/**'
               payment-api:
                 - 'app/business-api/payment-api/**'
-              transaction-api:
+              transactions-api:
                 - 'app/business-api/transactions-api/**'
 
       - name: Set environment for branch
@@ -66,7 +66,9 @@ jobs:
           echo "Container App Environment Name: ${{ vars.ACA_DEV_ENV_NAME }}"
           echo "Container App Copilot Name: ${{ vars.COPILOT_ACA_DEV_APP_NAME }}"
           echo "Resource Group: ${{ vars.RESOURCE_GROUP }}"
-          echo "ACR Name: ${{ vars.ACR_NAME }}"              
+          echo "ACR Name: ${{ vars.ACR_NAME }}"    
+          echo "Deploy Environment: ${{ steps.set-deploy-env.outputs.DEPLOY_ENVIRONMENT }}"
+
   build-account-app:
     needs: changes-detection
     if : ${{ needs.changes-detection.outputs.build-account-api == 'true' }}
@@ -88,9 +90,9 @@ jobs:
       container-app-name: ${{ vars.ACCOUNTS_ACA_DEV_APP_NAME }}
     secrets: inherit
 
-  build-transaction-app:
+  build-transactions-app:
     needs: changes-detection
-    if : ${{ needs.changes-detection.outputs.build-transaction-api == 'true' }}
+    if : ${{ needs.changes-detection.outputs.build-transactions-api == 'true' }}
     uses: ./.github/workflows/acr-build-push.yaml
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
@@ -98,9 +100,9 @@ jobs:
       app-folder-path: ./app/business-api/transactions-api
     secrets: inherit
   
-  deploy-transaction-app:
-    needs: [changes-detection,build-transaction-app]
-    if: ${{ needs.changes-detection.outputs.build-transaction-api == 'true' }}
+  deploy-transactions-app:
+    needs: [changes-detection,build-transactions-app]
+    if: ${{ needs.changes-detection.outputs.build-transactions-api == 'true' }}
     uses: ./.github/workflows/aca-deploy.yaml
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
