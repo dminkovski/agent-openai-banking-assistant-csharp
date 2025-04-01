@@ -19,6 +19,8 @@ permissions:
 jobs:
   changes-detection:
     runs-on: ubuntu-latest
+    environment:
+        name: "Development"
     outputs:
       env-name: ${{steps.set-deploy-env.outputs.DEPLOY_ENVIRONMENT}}
       build-banking-assistant: ${{ steps.changes.outputs.banking-assistant }}
