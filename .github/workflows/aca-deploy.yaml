@@ -38,6 +38,14 @@ jobs:
             client-id: ${{ vars.AZURE_CLIENT_ID }}
             tenant-id: ${{ vars.AZURE_TENANT_ID }}
             subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }} 
+        - name: Output Input Variables
+          run: |
+            echo "Container App Name: ${{ inputs.container-app-name }}"
+            echo "Container App Environment Name: ${{ inputs.container-app-env-name }}"
+            echo "Image Name: ${{ inputs.image-name }}"
+            echo "Environment Name: ${{ inputs.env-name }}"
+            echo "Resource Group: ${{ vars.RESOURCE_GROUP }}"
+            echo "ACR Name: ${{ vars.ACR_NAME }}"
         - name: Build and deploy Container App
           uses: azure/container-apps-deploy-action@v1
           with:
