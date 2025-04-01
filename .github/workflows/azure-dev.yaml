@@ -69,7 +69,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/account-api
-      app-folder-path: ./app/business-api/account
+      app-folder-path: ./app/business-api/account-api
     secrets: inherit
   
   deploy-account-app:
@@ -89,7 +89,7 @@ jobs:
     uses: ./.github/workflows/acr-build-push.yaml
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
-      image-name: agent-openai-banking-assistant-csharp/transactions-history-api
+      image-name: agent-openai-banking-assistant-csharp/transactions-api
       app-folder-path: ./app/business-api/transactions-api
     secrets: inherit
   
@@ -111,7 +111,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/payment-api
-      app-folder-path: ./app/business-api/payment
+      app-folder-path: ./app/business-api/payment-api
     secrets: inherit
   
   deploy-payment-app:
