@@ -61,7 +61,12 @@ jobs:
               echo "branch not detected. Set Development environment as default"
               echo "DEPLOY_ENVIRONMENT=Development" >> "$GITHUB_OUTPUT"
           fi
-
+      - name: Output Input Variables
+        run: |
+          echo "Container App Environment Name: ${{ vars.ACA_DEV_ENV_NAME }}"
+          echo "Container App Copilot Name: ${{ vars.COPILOT_ACA_DEV_APP_NAME }}"
+          echo "Resource Group: ${{ vars.RESOURCE_GROUP }}"
+          echo "ACR Name: ${{ vars.ACR_NAME }}"              
   build-account-app:
     needs: changes-detection
     if : ${{ needs.changes-detection.outputs.build-account-api == 'true' }}
@@ -79,7 +84,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/account-api
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
+      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME }}
       container-app-name: ${{ vars.ACCOUNTS_ACA_DEV_APP_NAME }}
     secrets: inherit
 
@@ -100,7 +105,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/transactions-api
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
+      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME }}
       container-app-name: ${{ vars.TRANSACTIONS_ACA_DEV_APP_NAME }}
     secrets: inherit
 
@@ -121,7 +126,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/payment-api
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
+      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME }}
       container-app-name: ${{ vars.PAYMENTS_ACA_DEV_APP_NAME }}
     secrets: inherit
       
@@ -142,7 +147,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/web
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
+      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME }}
       container-app-name: ${{ vars.WEB_ACA_DEV_APP_NAME }}
     secrets: inherit
   
@@ -163,7 +168,7 @@ jobs:
     with:
       env-name: ${{ needs.changes-detection.outputs.env-name}}
       image-name: agent-openai-banking-assistant-csharp/banking-assistant
-      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME}}
+      container-app-env-name: ${{ vars.ACA_DEV_ENV_NAME }}
       container-app-name: ${{ vars.COPILOT_ACA_DEV_APP_NAME }}
     secrets: inherit
    
