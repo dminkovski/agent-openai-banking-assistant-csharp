@@ -31,7 +31,6 @@
         {
             var configuration = provider.GetRequiredService<IConfiguration>();
             var endpoint = configuration["DocumentIntelligence:Endpoint"];
-            var apiKey = configuration["DocumentIntelligence:ApiKey"];
             var credential = new DefaultAzureCredential();
             return new DocumentIntelligenceClient(new Uri(endpoint), credential);
         });
@@ -44,8 +43,8 @@
         {
             var configuration = provider.GetRequiredService<IConfiguration>();
             var endpoint = configuration["AzureOpenAI:Endpoint"];
-            var apiKey = configuration["AzureOpenAI:ApiKey"];
-            return new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
+            var credential = new DefaultAzureCredential();
+            return new AzureOpenAIClient(new Uri(endpoint), credential);
         });
 
         services.AddSingleton<Kernel>(provider =>
@@ -53,7 +52,6 @@
             var configuration = provider.GetRequiredService<IConfiguration>();
             var deploymentName = configuration[key: "AzureOpenAI:Deployment"];
             var endpoint = configuration[key: "AzureOpenAI:Endpoint"];
-            var apiKey = configuration[key: "AzureOpenAI:ApiKey"];
             var credential = new DefaultAzureCredential();
 
             IKernelBuilder kernelBuilder = Kernel.CreateBuilder();

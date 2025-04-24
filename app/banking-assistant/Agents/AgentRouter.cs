@@ -14,7 +14,7 @@ public class AgentRouter
         _kernel = kernel;
         _intentExtractorAgent = new IntentExtractorAgent(kernel, configuration, loggerFactory.CreateLogger<IntentExtractorAgent>());
         _transactionsReportingAgent = new TransactionsReportingAgent(kernel, configuration, userService, loggerFactory.CreateLogger<TransactionsReportingAgent>());
-        _accountAgent = new AccountAgent(kernel, configuration, loggerFactory.CreateLogger<AccountAgent>());
+        _accountAgent = new AccountAgent(kernel, configuration, userService, loggerFactory.CreateLogger<AccountAgent>());
         _paymentAgent = new PaymentAgent(kernel, configuration, documentScanner, userService, loggerFactory);
         _logger = loggerFactory.CreateLogger<AgentRouter>();
     }
@@ -63,10 +63,15 @@ public class AgentRouter
           new(selectionFunction, _kernel)
           {   
               // Parse the function response.
-              ResultParser = (result) => result.GetValue<string>() ?? "",
               HistoryVariableName = "history",
               // Save tokens by not including the entire history in the prompt
               HistoryReducer = new ChatHistoryTruncationReducer(5),
+              ResultParser = (result) =>
+              {
+                  var selectedAgent = result.GetValue<string>() ?? "";
+                  _logger.LogInformation($"================ {selectedAgent} ======== {Environment.NewLine}");
+                  return selectedAgent;
+              },
           };
         // Create a chat using the defined selection strategy.
         KernelFunctionTerminationStrategy terminationStrategy =
@@ -97,7 +102,7 @@ public class AgentRouter
             await foreach (ChatMessageContent response in chat.InvokeAsync())
             {
 
-                _logger.LogInformation($"{response.AuthorName.ToUpperInvariant()}:{Environment.NewLine}{response.Content}");
+                _logger.LogInformation($"{response.Content}");
                 chatHistory.AddAssistantMessage(response.Content);
              
             }

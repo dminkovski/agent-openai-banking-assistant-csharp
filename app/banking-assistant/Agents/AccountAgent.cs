@@ -9,7 +9,7 @@ public class AccountAgent
     private readonly ILogger<AccountAgent> _logger;
 
 
-    public AccountAgent(Kernel kernel, IConfiguration configuration, ILogger<AccountAgent> logger)
+    public AccountAgent(Kernel kernel, IConfiguration configuration, IUserService userService, ILogger<AccountAgent> logger)
     {
         _logger = logger;
         Kernel toolKernel = kernel.Clone();
@@ -27,7 +27,7 @@ public class AccountAgent
         new()
         {
             Name = "AccountAgent",
-            Instructions = AgentInstructions.AccountAgentInstructions,
+            Instructions = String.Format(AgentInstructions.AccountAgentInstructions, userService.GetLoggedUser()),
             Kernel = toolKernel,
             Arguments =
             new KernelArguments(
