@@ -9,6 +9,11 @@ on:
     tags:        
       - v*.*.*
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number (if manually running)'
+        required: false
+        default: ''
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
